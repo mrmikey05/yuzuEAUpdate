@@ -8,6 +8,7 @@ YuzuEA_emuPath="$HOME/Applications/yuzu-ea.AppImage"
 YuzuEA_lastVerFile="$HOME/emudeck/yuzu-ea.ver"
 Yuzu_lastVerFile="$HOME/emudeck/yuzu.ver"
 showProgress="true"
+useEA="true"
 
 #source the helpers for safeDownload
 . "$HOME/.config/EmuDeck/backend/functions/helperFunctions.sh"
@@ -21,13 +22,30 @@ if [[ ! $emuExeFile =~ "AppImage" ]]; then
     emuExeFile=$(find "$emufolder" -iname "${emuName}*.AppImage" | sort -n | cut -d' ' -f 2- | tail -n 1 2>/dev/null)
 fi
 if [[ ! $emuExeFile =~ "AppImage" ]]; then
-     zenity --info --title="Yuzu AppImage not found!" --width 200 --text "Please check that you have the appimage in ~/Applications or \nrerun Emudeck and ensure it is installed." 2>/dev/null
+     #zenity --info --title="Yuzu AppImage not found!" --width 200 --text "Please check that you have the appimage in ~/Applications or \nrerun Emudeck and ensure it is installed." 2>/dev/null
 fi
 isMainline=true
 if [ ! "$emuExeFile" = "$emufolder/$emuName.AppImage" ]; then
     isMainline=false
 fi
 
+if [ "$isMainline" == "true" ] && [ "$useEA" == "true" ]; then
+	yuzuHost="https://api.github.com/repos/yuzu-emu/yuzu-mainline/releases/latest"
+	metaData=$(curl -fSs ${yuzuHost})
+	fileToDownload=$(echo ${metaData} | jq -r '.assets[] | select(.name|test(".*.AppImage$")).browser_download_url')
+	currentVer=$(echo ${metaData} | jq -r '.tag_name')
+	echo "No EA found! Downloading ${currentVer} appimage: ${fileToDownload}"
+	if safeDownload "$emuName" "${fileToDownload}" "$YuzuEA_emuPath" "$showProgress"; then
+		chmod +x "$emufolder/$emuName.AppImage"
+		echo "latest version $currentVer > $YuzuEA_lastVerFile"
+		echo "${currentVer}" > "${YuzuEA_lastVerFile}"
+		isMainline=false
+		emuExeFile=$(find "$emufolder" -iname "${emuName}-ea*.AppImage" | sort -n | cut -d' ' -f 2- | tail -n 1 2>/dev/null)
+	else
+		zenity --error --text "Error updating yuzu!" --width=250 2>/dev/null
+	fi
+
+fi
 echo "Detected exe: $emuExeFile"
 
 #if launched without parameters we can check for updates.
