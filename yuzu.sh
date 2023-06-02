@@ -40,7 +40,7 @@ if [ "$isMainline" == "true" ] && [ "$useEA" == "true" ]; then
 		echo "latest version $currentVer > $YuzuEA_lastVerFile"
 		echo "${currentVer}" > "${YuzuEA_lastVerFile}"
 		isMainline=false
-		emuExeFile=$(find "$emufolder" -iname "${emuName}-ea*.AppImage" | sort -n | cut -d' ' -f 2- | tail -n 1 2>/dev/null)
+		emuExeFile="${emuName}-ea.AppImage"
 	else
 		zenity --error --text "Error updating yuzu!" --width=250 2>/dev/null
 	fi
