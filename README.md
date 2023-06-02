@@ -14,4 +14,4 @@ To replace it, download the yuzu.sh [here](https://github.com/mrmikey05/yuzuEAUp
 I added a configuration to check if there's a Early Access file (yuzu-ea.AppImage) and if not, it will download automatically. If you do not wish to use Early Access and stick with Mainline, set the `useEA=True` to `useEA=False`. It is set to **True** by default. 
 
 ## Revert back to default
-If you want to revert back to default, you can get the default yuzu.sh from [EmuDeck Github](https://github.com/dragoonDorise/EmuDeck/blob/main/tools/launchers/yuzu.sh(. Either download and replace it or copy the content inside and paste in over your yuzu.sh file.
+If you want to revert back to default, you can get the default yuzu.sh from [EmuDeck Github](https://github.com/dragoonDorise/EmuDeck/blob/main/tools/launchers/yuzu.sh). Either download and replace it or copy the content inside and paste in over your yuzu.sh file.
